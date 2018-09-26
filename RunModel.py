@@ -30,7 +30,10 @@ def cn_word_segmentation(text):
 # :: Read input ::
 with open(inputPath, 'r', encoding='utf8') as f:
     text = f.read()
-text = cn_word_segmentation(text)
+if is_chinese:
+    text = cn_word_segmentation(text)
+    print('Chinese mode. Segemented text:')
+    print(text)
 
 # :: Load the model ::
 lstmModel = BiLSTM.loadModel(modelPath)
