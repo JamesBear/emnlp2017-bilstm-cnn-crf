@@ -15,10 +15,22 @@ if len(sys.argv) < 3:
 
 modelPath = sys.argv[1]
 inputPath = sys.argv[2]
+is_chinese = False
+if len(sys.argv) and sys.argv[3] == 'cn':
+    is_chinese = True
+
+def cn_word_segmentation(text):
+    out_text = ''
+    import jieba
+    for line in text.splitlines():
+        line_out = ' '.join(list(jieba.cut(line)))
+        out_text += line_out + '\n'
+    return out_text
 
 # :: Read input ::
-with open(inputPath, 'r') as f:
+with open(inputPath, 'r', encoding='utf8') as f:
     text = f.read()
+text = cn_word_segmentation(text)
 
 # :: Load the model ::
 lstmModel = BiLSTM.loadModel(modelPath)

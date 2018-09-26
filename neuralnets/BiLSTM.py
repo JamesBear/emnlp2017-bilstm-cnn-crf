@@ -372,7 +372,7 @@ class BiLSTM:
             if not os.path.exists(directory):
                 os.makedirs(directory)
                 
-            self.resultsSavePath = open(resultsFilepath, 'w')
+            self.resultsSavePath = open(resultsFilepath, 'w', enocding='utf8')
         else:
             self.resultsSavePath = None
         

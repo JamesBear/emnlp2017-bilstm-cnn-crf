@@ -12,6 +12,7 @@ Sample output:
 """
 
 import re
+import jieba
 
 fast_extraction_pattern = '\\{\\{([^{:]+):([^:}]+)\\}\\}'
 fast_extraction = re.compile(fast_extraction_pattern)
@@ -50,7 +51,7 @@ def split_trainset(train_list):
     return train, dev, test
 
 def write_list(file, _list):
-    out_str = '\n'.join(_list)
+    out_str = '\n\n'.join(_list)
     write_to_file(file, out_str)
     print('{} records written to {}'.format(len(_list), file))
 
@@ -58,9 +59,9 @@ def test():
     content = get_file_content(ORIGINAL_FILE)
     types = set()
     out_list = []
-    current = 0
     line_count = 0
-    for line in content.splitlines():
+    for line in content.replace('。', '\n').splitlines():
+        current = 0
         line_count += 1
         groups = []
         sample_out_list = []
@@ -71,25 +72,29 @@ def test():
             if current < m.start():
                 groups.append(('o', current, m.start(), None, None))
             current = m.end()
-            groups.append(('e', m.start(), m.end(), m.group(2), m.group(1)))
+            groups.append(('e', m.start(), m.end(), m.group(2).strip(), m.group(1)))
         if current < len(line):
-            groups.append(('o', current, m.start(), None, None))
+            groups.append(('o', current, len(line), None, None))
         for tag_type, start_index, end_index, entity, tag_name in groups:
             if tag_type == 'o':
-                for i in range(start_index, end_index):
-                    sample_out_list.append(line[i] + SEPARATOR + TAG_OTHER)
+                for word in list(jieba.cut(line[start_index: end_index])):
+                    if word.isspace():
+                        continue
+                    sample_out_list.append(word + SEPARATOR + TAG_OTHER)
             else:
                 # naive implementation
                 tag_begin = TAG_E_BEGIN_PREFIX + tag_name.upper().replace('_', '')
                 tag_in = TAG_E_IN_PREFIX + tag_name.upper().replace('_', '')
                 is_first = True
-                for c in entity:
+                for word in list(jieba.cut(entity)):
+                    if word.isspace():
+                        continue
                     if is_first:
                         tag = tag_begin
                         is_first = False
                     else:
                         tag = tag_in
-                    sample_out_list.append(c + SEPARATOR + tag)
+                    sample_out_list.append(word + SEPARATOR + tag)
         line_output = '\n'.join(sample_out_list)
         #print(line_output)
         out_list.append(line_output)

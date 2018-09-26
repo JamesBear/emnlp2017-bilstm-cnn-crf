@@ -33,14 +33,14 @@ logger.addHandler(ch)
 #
 ######################################################
 datasets = {
-    'conll2003':                                   #Name of the dataset
-        {'columns': {0:'tokens', 3:'NER_BIO'},    #CoNLL format for the input data. Column 1 contains tokens, column 2 contains NER information using BIO encoding
+    'BosonNLP_NER_6C':                                   #Name of the dataset
+        {'columns': {0:'tokens', 1:'NER_BIO'},    #CoNLL format for the input data. Column 1 contains tokens, column 2 contains NER information using BIO encoding
          'label': 'NER_BIO',                      #Which column we like to predict
          'evaluate': True,                        #Should we evaluate on this task? Set true always for single task setups
          'commentSymbol': None}                   #Lines in the input data starting with this string will be skipped. Can be used to skip comments
 }
 # :: Path on your computer to the word embeddings. Embeddings by Reimers et al. will be downloaded automatically ::
-embeddingsPath = 'komninos_english_embeddings.gz'
+embeddingsPath = 'sgns.zhihu.char'
 
 # :: Prepares the dataset to be used with the LSTM-network. Creates and stores cPickle files in the pkl/ folder ::
 pickleFile = perpareDataset(embeddingsPath, datasets)

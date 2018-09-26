@@ -101,7 +101,7 @@ def readEmbeddings(embeddingsPath, datasetFiles, frequencyThresholdUnknownTokens
         logging.info("Compute which tokens are required for the experiment")
 
         def createDict(filename, tokenPos, vocab):
-            for line in open(filename):
+            for line in open(filename, encoding='utf8'):
                 if line.startswith('#'):
                     continue
                 splits = line.strip().split()
@@ -131,10 +131,14 @@ def readEmbeddings(embeddingsPath, datasetFiles, frequencyThresholdUnknownTokens
                                                                                                encoding="utf8")
 
     embeddingsDimension = None
+    is_first_line = True
 
     for line in embeddingsIn:
         split = line.rstrip().split(" ")
         word = split[0]
+        if len(split) == 2 and is_first_line:
+            continue
+        is_first_line = False
 
         if embeddingsDimension == None:
             embeddingsDimension = len(split) - 1
@@ -162,7 +166,7 @@ def readEmbeddings(embeddingsPath, datasetFiles, frequencyThresholdUnknownTokens
 
     # Extend embeddings file with new tokens
     def createFD(filename, tokenIndex, fd, word2Idx):
-        for line in open(filename):
+        for line in open(filename, encoding='utf8'):
             if line.startswith('#'):
                 continue
 
