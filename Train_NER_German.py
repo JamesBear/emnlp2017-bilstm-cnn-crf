@@ -39,6 +39,13 @@ datasets = {
          'evaluate': True,                        #Should we evaluate on this task? Set true always for single task setups
          'commentSymbol': None}                   #Lines in the input data starting with this string will be skipped. Can be used to skip comments
 }
+datasets = {
+    'NER_cn_names_artificial_data':                                   #Name of the dataset
+        {'columns': {0:'tokens', 1:'NER_BIO'},    #CoNLL format for the input data. Column 1 contains tokens, column 2 contains NER information using BIO encoding
+         'label': 'NER_BIO',                      #Which column we like to predict
+         'evaluate': True,                        #Should we evaluate on this task? Set true always for single task setups
+         'commentSymbol': None}                   #Lines in the input data starting with this string will be skipped. Can be used to skip comments
+}
 # :: Path on your computer to the word embeddings. Embeddings by Reimers et al. will be downloaded automatically ::
 embeddingsPath = 'sgns.zhihu.char'
 
