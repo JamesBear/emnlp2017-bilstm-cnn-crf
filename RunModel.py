@@ -16,8 +16,11 @@ if len(sys.argv) < 3:
 modelPath = sys.argv[1]
 inputPath = sys.argv[2]
 is_chinese = False
-if len(sys.argv) and sys.argv[3] == 'cn':
+is_name_recognition = False
+if len(sys.argv) > 3 and sys.argv[3] == 'cn':
     is_chinese = True
+if len(sys.argv) > 3 and sys.argv[3] == 'name':
+    is_name_recognition = True
 
 def cn_word_segmentation(text):
     out_text = ''
@@ -34,6 +37,9 @@ if is_chinese:
     text = cn_word_segmentation(text)
     print('Chinese mode. Segemented text:')
     print(text)
+if is_name_recognition:
+    print('Name mode.')
+    text = ' '.join(text)
 
 # :: Load the model ::
 lstmModel = BiLSTM.loadModel(modelPath)
