@@ -16,7 +16,7 @@ dev_file = 'dev.txt'
 test_file = 'test.txt'
 MIN_ARTICLE_LENGTH = 20
 MAX_CHAR_PER_LINE = 45
-MAX_ARTICLES_NEEDED = 1000
+MAX_ARTICLES_NEEDED = 300
 
 
 def get_file_content(path, encoding='utf-8'):
@@ -64,10 +64,10 @@ def load_articles(shuffle=True):
     if shuffle:
         random.shuffle(article_list)
     return article_list
-    
+
 def assign_names_to_articles(names, articles):
     print('names: {}, articles: {}'.format(len(names), len(articles)))
-    
+
     batch_size = len(names)/len(articles)
     if batch_size > int(batch_size):
         batch_size = int(batch_size) + 1

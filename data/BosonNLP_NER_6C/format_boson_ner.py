@@ -14,6 +14,8 @@ Sample output:
 import re
 import jieba
 
+name_mode = True
+print('name only mode: ', name_mode)
 fast_extraction_pattern = '\\{\\{([^{:]+):([^:}]+)\\}\\}'
 fast_extraction = re.compile(fast_extraction_pattern)
 ORIGINAL_FILE = 'BosonNLP_NER_6C.txt'
@@ -55,6 +57,12 @@ def write_list(file, _list):
     write_to_file(file, out_str)
     print('{} records written to {}'.format(len(_list), file))
 
+def word_segmentation(text):
+    global name_mode
+    if name_mode: # divide by characters instead of words
+        return text
+    return jieba.cut(text)
+
 def test():
     content = get_file_content(ORIGINAL_FILE)
     types = set()
@@ -77,7 +85,7 @@ def test():
             groups.append(('o', current, len(line), None, None))
         for tag_type, start_index, end_index, entity, tag_name in groups:
             if tag_type == 'o':
-                for word in list(jieba.cut(line[start_index: end_index])):
+                for word in list(word_segmentation(line[start_index: end_index])):
                     if word.isspace():
                         continue
                     sample_out_list.append(word + SEPARATOR + TAG_OTHER)
@@ -86,7 +94,7 @@ def test():
                 tag_begin = TAG_E_BEGIN_PREFIX + tag_name.upper().replace('_', '')
                 tag_in = TAG_E_IN_PREFIX + tag_name.upper().replace('_', '')
                 is_first = True
-                for word in list(jieba.cut(entity)):
+                for word in list(word_segmentation(entity)):
                     if word.isspace():
                         continue
                     if is_first:
@@ -94,6 +102,12 @@ def test():
                         is_first = False
                     else:
                         tag = tag_in
+                    if name_mode:
+                        if 'PERSONNAME' in tag:
+                            tag = tag.replace('PERSONNAME', 'NAME')
+                        else:
+                            tag = TAG_OTHER
+
                     sample_out_list.append(word + SEPARATOR + tag)
         line_output = '\n'.join(sample_out_list)
         #print(line_output)
@@ -104,7 +118,7 @@ def test():
     write_list(test_file, test)
     #out_str = '\n'.join(out_list)
     #print(out_str)
-    
+
     #write_to_file(out_file, out_str)
 
     #print('line_count = ', line_count)
